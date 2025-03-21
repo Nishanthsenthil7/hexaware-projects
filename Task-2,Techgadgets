@@ -106,54 +106,18 @@ INSERT INTO OrderDetails (OrderDetail_id, Order_id, Product_id, Quantity) VALUES
 (10, 8, 8, 6);  
 
 
+select firstname, lastname, email  from customer;  select o.orders_id, o.orderdate, c.firstname, c.lastname  from orders o join customer c on o.customer_id = c.customer_id;
 
+insert into customer (customer_id, firstname, lastname, email, phone, address)  values (11, 'arun', 'raj', 'arunraj@gmail.com', 9090909090, 'chennai, tamil nadu'); set sql_safe_updates = 0; update products  set price = price * 1.10; set sql_safe_updates = 1;
 
-select firstname, lastname, email 
-from customer;
-select o.orders_id, o.orderdate, c.firstname, c.lastname 
-from orders o
-join customer c on o.customer_id = c.customer_id;
+delete from orderdetails where order_id = 5; delete from orders where orders_id = 5; insert into orders (orders_id, customer_id, orderdate, totalamount)  values (11, 3, '2025-03-20', 999.99); update customer 
 
-insert into customer (customer_id, firstname, lastname, email, phone, address) 
-values (11, 'arun', 'raj', 'arunraj@gmail.com', 9090909090, 'chennai, tamil nadu');
-set sql_safe_updates = 0;
-update products 
-set price = price * 1.10;
-set sql_safe_updates = 1;
+set email = 'newemail@example.com', address = 'new address, city' where customer_id = 1; 
 
-delete from orderdetails where order_id = 5;
-delete from orders where orders_id = 5;
-insert into orders (orders_id, customer_id, orderdate, totalamount) 
-values (11, 3, '2025-03-20', 999.99);
-update customer 
+update orders o join (select od.order_id, sum(p.price * od.quantity) as newtotalamount from orderdetails od join products p on od.product_id = p.product_id group by od.order_id ) as ordertotals on o.orders_id = ordertotals.order_id set o.totalamount = ordertotals.newtotalamount;
 
-set email = 'newemail@example.com', address = 'new address, city'
-where customer_id = 123;  -- replace 123 with the actual id
+delete from orderdetails where order_id in  (select orders_id from orders where customer_id = @customerid); delete from orders where customer_id = @customerid;
 
-update orders o
-join (select od.order_id, sum(p.price * od.quantity) as newtotalamount
-    from orderdetails od
-    join products p on od.product_id = p.product_id
-    group by od.order_id
-) as ordertotals on o.orders_id = ordertotals.order_id
-set o.totalamount = ordertotals.newtotalamount;
+insert into products (product_id, productname, description, price)  values (11, 'smart vr headset', 'advanced vr headset with 4k display', 399.99); desc orders; alter table orders add column orderstatus varchar(50) default 'pending'; update orders  set orderstatus = 'shipped'  where orders_id = @orderid;
 
-delete from orderdetails where order_id in 
-    (select orders_id from orders where customer_id = @customerid);
-delete from orders where customer_id = @customerid;
-
-insert into products (product_id, productname, description, price) 
-values (11, 'smart vr headset', 'advanced vr headset with 4k display', 399.99);
-desc orders;
-alter table orders add column orderstatus varchar(50) default 'pending';
-update orders 
-set orderstatus = 'shipped' 
-where orders_id = @orderid;
-
-set sql_safe_updates = 0;
-update customer 
-set orderscount = (
-    select count(*) from orders 
-    where orders.customer_id = customer.customer_id
-);
-set sql_safe_updates = 1;
+set sql_safe_updates = 0; update customer  set orderscount = ( select count(*) from orders  where orders.customer_id = customer.customer_id ); set sql_safe_updates = 1;
