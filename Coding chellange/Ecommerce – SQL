@@ -2,7 +2,7 @@ create database ecommerce;
 use ecommerce;
 
 create table customers (
-    customer_id int primary key,
+    customer_id int auto_increment primary key,
     first_name varchar(50),
     last_name varchar(50),
     email varchar(100),
@@ -10,7 +10,7 @@ create table customers (
 );
 
 create table products (
-    product_id int primary key,
+    product_id int auto_increment primary key,
     name varchar(100),
     description text,
     price decimal(10,2),
@@ -18,7 +18,7 @@ create table products (
 );
 
 create table cart (
-    cart_id int primary key,
+    cart_id int auto_increment primary key,
     customer_id int,
     product_id int,
     quantity int,
@@ -27,7 +27,7 @@ create table cart (
 );
 
 create table orders (
-    order_id int primary key,
+    order_id int auto_increment primary key,
     customer_id int,
     order_date date,
     total_price decimal(10,2),
@@ -36,7 +36,7 @@ create table orders (
 );
 
 create table order_items (
-    order_item_id int primary key,
+    order_item_id int auto_increment primary key,
     order_id int,
     product_id int,
     quantity int,
@@ -143,15 +143,6 @@ select product_id, (SUM(itemAmount) / (select SUM(itemAmount) From order_items))
 SELECT * FROM products WHERE stockQuantity < 5;
 
 select * from customers where customer_id in (select customer_id from orders where total_price > 1000);
-
-
-
-
-
-
-
-
-
 
 
 
