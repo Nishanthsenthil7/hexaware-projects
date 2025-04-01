@@ -1,0 +1,145 @@
+package exerciseprogram;
+
+import java.util.*;
+
+class Customer {
+    private int customerID;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private String address;
+    private List<Order> orders;
+
+    public Customer(int customerID, String firstName, String lastName, String email, String phone, String address) {
+        this.customerID = customerID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.orders = new ArrayList<>();
+    }
+
+    public int calculateTotalOrders() {
+        return orders.size();
+    }
+
+    public void getCustomerDetails() {
+        System.out.println("Customer ID: " + customerID);
+        System.out.println("Name: " + firstName + " " + lastName);
+        System.out.println("Email: " + email);
+        System.out.println("Phone: " + phone);
+        System.out.println("Address: " + address);
+    }
+
+    public void updateCustomerInfo(String email, String phone, String address) {
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
+}
+
+class Product {
+    private int productID;
+    private String productName;
+    private String description;
+    private double price;
+
+    public Product(int productID, String productName, String description, double price) {
+        this.productID = productID;
+        this.productName = productName;
+        this.description = description;
+        this.price = price;
+    }
+
+    public void getProductDetails() {
+        System.out.println("Product ID: " + productID);
+        System.out.println("Name: " + productName);
+        System.out.println("Description: " + description);
+        System.out.println("Price: $" + price);
+    }
+
+    public void updateProductInfo(String description, double price) {
+        this.description = description;
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+}
+
+class Order {
+    private int orderID;
+    private Customer customer;
+    private Date orderDate;
+    private double totalAmount;
+
+    public Order(int orderID, Customer customer, Date orderDate, double totalAmount) {
+        this.orderID = orderID;
+        this.customer = customer;
+        this.orderDate = orderDate;
+        this.totalAmount = totalAmount;
+    }
+
+    public void getOrderDetails() {
+        System.out.println("Order ID: " + orderID);
+        System.out.println("Customer: " + customer);
+        System.out.println("Order Date: " + orderDate);
+        System.out.println("Total Amount: $" + totalAmount);
+    }
+}
+
+class OrderDetail {
+    private int orderDetailID;
+    private Order order;
+    private Product product;
+    private int quantity;
+
+    public OrderDetail(int orderDetailID, Order order, Product product, int quantity) {
+        this.orderDetailID = orderDetailID;
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public double calculateSubtotal() {
+        return product.getPrice() * quantity;
+    }
+}
+
+class Inventory {
+    private int inventoryID;
+    private Product product;
+    private int quantityInStock;
+
+    public Inventory(int inventoryID, Product product, int quantityInStock) {
+        this.inventoryID = inventoryID;
+        this.product = product;
+        this.quantityInStock = quantityInStock;
+    }
+
+    public void addToInventory(int quantity) {
+        quantityInStock += quantity;
+    }
+
+    public void removeFromInventory(int quantity) {
+        if (quantityInStock >= quantity) {
+            quantityInStock -= quantity;
+        } else {
+            System.out.println("Insufficient stock!");
+        }
+    }
+}
+
+public class TechShopMain {  
+    public static void main(String[] args) {
+        Customer c1 = new Customer(1, "John", "Doe", "john.doe@example.com", "1234567890", "123 Main St");
+        Product p1 = new Product(101, "Laptop", "Gaming Laptop", 1200.99);
+        Inventory inv1 = new Inventory(201, p1, 50);
+
+        c1.getCustomerDetails();
+        p1.getProductDetails();
+    }
+}
