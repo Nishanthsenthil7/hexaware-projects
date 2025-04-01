@@ -1,0 +1,101 @@
+CREATE DATABASE crimeReportingsystem;
+USE crimeReportingsystem;
+
+CREATE TABLE lawenforcementagencies (
+    agency_id INT AUTO_INCREMENT PRIMARY KEY,
+    agencyname VARCHAR(100),
+    jurisdiction TEXT,
+    contactinformation TEXT
+);
+
+
+CREATE TABLE officers (
+    officer_id INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(50),
+    lastname VARCHAR(50),
+    badgenumber VARCHAR(20) UNIQUE,
+    ranks VARCHAR(50),
+    contactinformation TEXT,
+    agency_id INT,
+    FOREIGN KEY (agency_id) REFERENCES lawenforcementagencies(agency_id)
+);
+
+
+CREATE TABLE victims (
+    victim_id INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(50),
+    lastname VARCHAR(50),
+    dateofbirth DATE,
+    gender ENUM('male', 'female', 'other'),
+    address TEXT,
+    phonenumber VARCHAR(15) UNIQUE
+);
+
+
+CREATE TABLE suspects (
+    suspect_id INT AUTO_INCREMENT PRIMARY KEY,
+    firstname VARCHAR(50),
+    lastname VARCHAR(50),
+    dateofbirth DATE,
+    gender ENUM('male', 'female', 'other'),
+    address TEXT,
+    phonenumber VARCHAR(15) UNIQUE
+);
+
+
+CREATE TABLE incidents (
+    incident_id INT AUTO_INCREMENT PRIMARY KEY,
+    incident_type VARCHAR(50),
+    incident_date DATE,
+    latitude DECIMAL(9,6),
+    longitude DECIMAL(9,6),
+    description TEXT,
+    status ENUM('open', 'closed', 'under investigation', 'pending', 'archived'),
+    agency_id INT,
+    officer_id INT,
+    FOREIGN KEY (agency_id) REFERENCES lawenforcementagencies(agency_id),
+    FOREIGN KEY (officer_id) REFERENCES officers(officer_id)
+);
+
+
+CREATE TABLE incident_victims (
+    incident_id INT,
+    victim_id INT,
+    PRIMARY KEY (incident_id, victim_id),
+    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id),
+    FOREIGN KEY (victim_id) REFERENCES victims(victim_id)
+);
+
+
+CREATE TABLE incident_suspects (
+    incident_id INT,
+    suspect_id INT,
+    PRIMARY KEY (incident_id, suspect_id),
+    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id),
+    FOREIGN KEY (suspect_id) REFERENCES suspects(suspect_id)
+);
+
+
+CREATE TABLE evidence (
+    evidence_id INT AUTO_INCREMENT PRIMARY KEY,
+    description TEXT,
+    locationfound TEXT,
+    incident_id INT,
+    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id)
+);
+
+
+CREATE TABLE reports (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    incident_id INT,
+    reportingofficer INT,
+    reportdate DATE,
+    reportdetails TEXT,
+    status ENUM('draft', 'finalized'),
+    FOREIGN KEY (incident_id) REFERENCES incidents(incident_id),
+    FOREIGN KEY (reportingofficer) REFERENCES officers(officer_id)
+);
+
+
+
+
