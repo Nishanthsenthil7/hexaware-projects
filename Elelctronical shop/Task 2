@@ -1,0 +1,121 @@
+
+use hexware;
+
+create table customer(
+Customer_id int primary key,
+FirstName varchar(50),
+LastName varchar(50),
+Email varchar(150) not null,
+Phone int,
+Address varchar(200)
+);
+
+create table Products(
+Product_id int primary key,
+ProductName varchar(50),
+Description varchar(50),
+price int
+);
+
+create table Orders(
+Orders_id int primary key,
+Customer_id int,
+FOREIGN KEY (Customer_id) REFERENCES customer(Customer_id),
+OrderDate int,
+TotalAmount int
+);
+
+create table OrderDetails(
+OrderDetail_id int primary key,
+Order_id int,
+Product_id int,
+Quantity int,
+FOREIGN KEY (Order_id) REFERENCES Orders(Orders_id),
+FOREIGN KEY (Product_id) REFERENCES Products(Product_id)
+);
+
+create table Inventory(
+Inventory_id int primary key,
+Product_id int,
+FOREIGN KEY (Product_id) REFERENCES Products(Product_id),
+QuantityInStock int,
+LastStockUpdate int
+);
+
+USE TechShop;  
+ALTER TABLE customer MODIFY Phone BIGINT;
+INSERT INTO customer (Customer_id, FirstName, LastName, Email, Phone, Address) VALUES  
+(1, 'Deepak', 'Kumar', 'deepakkumar@gmail.com', 1111111111, 'Chetipalayam, Coimbatore, Tamil Nadu'),  
+(2, 'Riyas', 'Ahammed', 'riyasahammed@gmail.com', 2222222222, 'Udumalaipet, Coimbatore, Tamil Nadu'),  
+(3, 'Nandha', 'Kumar', 'nandhakumar@gmail.com', 3333333333, 'Ooty, Coimbatore, Tamil Nadu'),  
+(4, 'Shankar', 'Murali', 'shankarmuralui.c@gmail.com', 4444444444, 'Kodaikanal, Coimbatore, Tamil Nadu'),  
+(5, 'Vimal', 'C', 'vimalc@gmail.com', 5555555555, 'Munnar, Coimbatore, Tamil Nadu'),  
+(6, 'Kiran', 'Moorthi', 'kiranmoorthi@gmail.com', 6666666666, 'Pollachi, Coimbatore, Tamil Nadu'),  
+(7, 'John', 'K', 'jhonk@gmail.com', 7777777777, 'Aliyar, Coimbatore, Tamil Nadu'),  
+(8, 'Jhanaki', 'S', 'janus@gmail.com', 8888888888, 'Ramanathapuram, Coimbatore, Tamil Nadu'),  
+(9, 'Rahul', 'N', 'rahul@gmail.com', 9999999999, 'RS Puram, Coimbatore, Tamil Nadu'),  
+(10, 'Surya', 'S', 'surya@gmail.com', 1010101010, 'VOC Street, Coimbatore, Tamil Nadu'); 
+
+INSERT INTO Products (Product_id, ProductName, Description, Price) VALUES
+(1, 'Ultra Gaming PC', 'High-performance PC with RTX 4090', 2999.99),
+(2, 'Pro Smartphone', 'Latest 5G smartphone with AI camera', 1199.99),
+(3, 'Noise Cancelling Headphones', 'Wireless over-ear headphones with ANC', 249.99),
+(4, '4K HDR Monitor', '32-inch Ultra HD display with 144Hz', 499.99),
+(5, 'RGB Mechanical Keyboard', 'Gaming keyboard with customizable RGB', 149.99),
+(6, 'Precision Gaming Mouse', 'High-DPI wireless mouse with RGB lighting', 89.99),
+(7, 'Advanced Smartwatch', 'Waterproof smartwatch with ECG monitoring', 349.99),
+(8, 'Professional Drawing Tablet', '15-inch display tablet for digital artists', 799.99),
+(9, 'Surround Sound System', '7.1 Dolby Atmos home theater system', 599.99),
+(10, 'High-Speed External SSD', '2TB USB-C SSD with 1GB/s read speed', 229.99);
+
+INSERT INTO Orders (Orders_id, Customer_id, OrderDate, TotalAmount) VALUES
+(1, 1, '2025-03-10', 2500.00),  
+(2, 2, '2025-03-11', 1150.00),  
+(3, 3, '2025-03-12', 300.00),  
+(4, 4, '2025-03-13', 750.00),   
+(5, 5, '2025-03-14', 125.00),    
+(6, 6, '2025-03-15', 1750.00),  
+(7, 7, '2025-03-16', 400.00),   
+(8, 8, '2025-03-17', 980.00),  
+(9, 9, '2025-03-18', 3150.00),  
+(10, 10, '2025-03-19', 650.00);
+ALTER TABLE Orders MODIFY COLUMN OrderDate DATE NOT NULL;
+
+INSERT INTO Inventory (Inventory_id, Product_id, QuantityInStock, LastStockUpdate) VALUES
+(1, 1, 50, 20250310),  
+(2, 2, 30, 20250311),  
+(3, 3, 100, 20250312),  
+(4, 4, 25, 20250313),  
+(5, 5, 75, 20250314),  
+(6, 6, 60, 20250315),  
+(7, 7, 40, 20250316),  
+(8, 8, 20, 20250317),  
+(9, 9, 55, 20250318),  
+(10, 10, 35, 20250319);
+
+INSERT INTO OrderDetails (OrderDetail_id, Order_id, Product_id, Quantity) VALUES  
+(1, 1, 3, 4),  
+(2, 1, 5, 3),  
+(3, 2, 2, 3),  
+(4, 3, 7, 1),  
+(5, 3, 10, 8),  
+(6, 4, 1, 6),  
+(7, 5, 6, 5),  
+(8, 6, 4, 4),  
+(9, 7, 9, 8),  
+(10, 8, 8, 6);  
+
+
+select firstname, lastname, email  from customer;  select o.orders_id, o.orderdate, c.firstname, c.lastname  from orders o join customer c on o.customer_id = c.customer_id;
+
+insert into customer (customer_id, firstname, lastname, email, phone, address)  values (11, 'arun', 'raj', 'arunraj@gmail.com', 9090909090, 'chennai, tamil nadu'); set sql_safe_updates = 0; update products  set price = price * 1.10; set sql_safe_updates = 1;
+
+delete from orderdetails where order_id = 5; delete from orders where orders_id = 5; insert into orders (orders_id, customer_id, orderdate, totalamount)  values (11, 3, '2025-03-20', 999.99); update customer set email = 'newemail@example.com', address = 'new address, city' where customer_id = 1; 
+
+update orders o join (select od.order_id, sum(p.price * od.quantity) as newtotalamount from orderdetails od join products p on od.product_id = p.product_id group by od.order_id ) as ordertotals on o.orders_id = ordertotals.order_id set o.totalamount = ordertotals.newtotalamount;
+
+delete from orderdetails where order_id in  (select orders_id from orders where customer_id = @customerid); delete from orders where customer_id = @customerid;
+
+insert into products (product_id, productname, description, price)  values (11, 'smart vr headset', 'advanced vr headset with 4k display', 399.99); desc orders; alter table orders add column orderstatus varchar(50) default 'pending'; update orders  set orderstatus = 'shipped'  where orders_id = @orderid;
+
+set sql_safe_updates = 0; update customer  set orderscount = ( select count(*) from orders  where orders.customer_id = customer.customer_id ); set sql_safe_updates = 1;
