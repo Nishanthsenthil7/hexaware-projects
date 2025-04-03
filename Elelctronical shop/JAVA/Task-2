@@ -21,26 +21,19 @@ class Customer {
         this.orders = new ArrayList<>();
     }
 
+    public int getCustomerID() { return customerID; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public String getEmail() { return email; }
+    public String getPhone() { return phone; }
+    public String getAddress() { return address; }
+
     public void addOrder(Order order) {
         orders.add(order);
     }
 
     public int calculateTotalOrders() {
         return orders.size();
-    }
-
-    public void getCustomerDetails() {
-        System.out.println("Customer ID: " + customerID);
-        System.out.println("Name: " + firstName + " " + lastName);
-        System.out.println("Email: " + email);
-        System.out.println("Phone: " + phone);
-        System.out.println("Address: " + address);
-        System.out.println("Total Orders: " + calculateTotalOrders());
-    }
-
-    @Override
-    public String toString() {
-        return firstName + " " + lastName + " (ID: " + customerID + ")";
     }
 }
 
@@ -54,28 +47,19 @@ class Product {
         this.productID = productID;
         this.productName = productName;
         this.description = description;
+        setPrice(price);
+    }
+
+    public int getProductID() { return productID; }
+    public String getProductName() { return productName; }
+    public String getDescription() { return description; }
+    public double getPrice() { return price; }
+
+    public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Price cannot be negative.");
+        }
         this.price = price;
-    }
-
-    public void getProductDetails() {
-        System.out.println("Product ID: " + productID);
-        System.out.println("Name: " + productName);
-        System.out.println("Description: " + description);
-        System.out.println("Price: $" + price);
-    }
-
-    public void updateProductInfo(String description, double price) {
-        this.description = description;
-        this.price = price;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    @Override
-    public String toString() {
-        return productName + " (ID: " + productID + ")";
     }
 }
 
@@ -94,48 +78,41 @@ class Order {
         this.totalAmount = 0;
     }
 
+    public int getOrderID() { return orderID; }
+    public Customer getCustomer() { return customer; }
+    public Date getOrderDate() { return orderDate; }
+    public double getTotalAmount() { return totalAmount; }
+
     public void addOrderDetail(OrderDetail orderDetail) {
         orderDetails.add(orderDetail);
         totalAmount += orderDetail.calculateSubtotal();
-    }
-
-    public void getOrderDetails() {
-        System.out.println("Order ID: " + orderID);
-        System.out.println("Customer: " + customer);
-        System.out.println("Order Date: " + orderDate);
-        System.out.println("Total Amount: $" + totalAmount);
-        System.out.println("Order Items:");
-        for (OrderDetail od : orderDetails) {
-            System.out.println(" - " + od);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "Order " + orderID + " for " + customer;
     }
 }
 
 class OrderDetail {
     private int orderDetailID;
-    private Order order;
     private Product product;
     private int quantity;
 
-    public OrderDetail(int orderDetailID, Order order, Product product, int quantity) {
+    public OrderDetail(int orderDetailID, Product product, int quantity) {
         this.orderDetailID = orderDetailID;
-        this.order = order;
         this.product = product;
+        setQuantity(quantity);
+    }
+
+    public int getOrderDetailID() { return orderDetailID; }
+    public Product getProduct() { return product; }
+    public int getQuantity() { return quantity; }
+
+    public void setQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than zero.");
+        }
         this.quantity = quantity;
     }
 
     public double calculateSubtotal() {
         return product.getPrice() * quantity;
-    }
-
-    @Override
-    public String toString() {
-        return product + " x " + quantity + " ($" + calculateSubtotal() + ")";
     }
 }
 
@@ -147,54 +124,18 @@ class Inventory {
     public Inventory(int inventoryID, Product product, int quantityInStock) {
         this.inventoryID = inventoryID;
         this.product = product;
+        setQuantityInStock(quantityInStock);
+    }
+
+    public int getInventoryID() { return inventoryID; }
+    public Product getProduct() { return product; }
+    public int getQuantityInStock() { return quantityInStock; }
+
+    public void setQuantityInStock(int quantityInStock) {
+        if (quantityInStock < 0) {
+            throw new IllegalArgumentException("Stock cannot be negative.");
+        }
         this.quantityInStock = quantityInStock;
     }
-
-    public void addToInventory(int quantity) {
-        quantityInStock += quantity;
-    }
-
-    public boolean removeFromInventory(int quantity) {
-        if (quantityInStock >= quantity) {
-            quantityInStock -= quantity;
-            return true;
-        } else {
-            System.out.println("Insufficient stock for " + product);
-            return false;
-        }
-    }
-
-    public void getInventoryDetails() {
-        System.out.println("Inventory ID: " + inventoryID);
-        System.out.println("Product: " + product);
-        System.out.println("Stock Available: " + quantityInStock);
-    }
 }
 
-public class Task2 {
-    public static void main(String[] args) {
-    
-        Customer c1 = new Customer(1, "John", "Doe", "john.doe@example.com", "1234567890", "123 Main St");
-
-      
-        Product p1 = new Product(101, "Laptop", "Gaming Laptop", 1200.99);
-        Inventory inv1 = new Inventory(201, p1, 50);
-
-      
-        Order order1 = new Order(301, c1, new Date());
-
-      
-        OrderDetail od1 = new OrderDetail(401, order1, p1, 2);
-
-        if (inv1.removeFromInventory(od1.calculateSubtotal() > 0 ? 2 : 0)) {
-            order1.addOrderDetail(od1);
-            c1.addOrder(order1);
-            System.out.println("Order placed successfully!");
-        } else {
-            System.out.println("Order could not be placed due to insufficient stock.");
-        }
-        c1.getCustomerDetails();
-        order1.getOrderDetails();
-        inv1.getInventoryDetails();
-    }
-}
