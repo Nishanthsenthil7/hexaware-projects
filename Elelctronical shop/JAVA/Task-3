@@ -1,187 +1,199 @@
 package ecomwebsite;
+	
+	import java.util.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+	class Customer {
+	    private int customerID;
+	    private String firstName;
+	    private String lastName;
+	    private String email;
+	    private String phone;
+	    private String address;
+	    private List<Order> orders;
 
-class Customer {
-    private int customerID;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private String address;
-    private List<Order> orders;
+	    public Customer(int customerID, String firstName, String lastName, String email, String phone, String address) {
+	        this.customerID = customerID;
+	        this.firstName = firstName;
+	        this.lastName = lastName;
+	        this.email = email;
+	        this.phone = phone;
+	        this.address = address;
+	        this.orders = new ArrayList<>();
+	    }
 
-    public Customer(int customerID, String firstName, String lastName, String email, String phone, String address) {
-        this.customerID = customerID;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        setEmail(email);
-        setPhone(phone);
-        this.address = address;
-        this.orders = new ArrayList<>();
-    }
+	    public int calculateTotalOrders() {
+	        return orders.size();
+	    }
 
-    public int getCustomerID() { return customerID; }
-    public String getFirstName() { return firstName; }
-    public String getLastName() { return lastName; }
-    public String getEmail() { return email; }
-    public String getPhone() { return phone; }
-    public String getAddress() { return address; }
-    public List<Order> getOrders() { return orders; }
+	    public void getCustomerDetails() {
+	        System.out.println("Customer ID: " + customerID);
+	        System.out.println("Name: " + firstName + " " + lastName);
+	        System.out.println("Email: " + email);
+	        System.out.println("Phone: " + phone);
+	        System.out.println("Address: " + address);
+	    }
 
-    
-    public void setEmail(String email) {
-        if (email.contains("@") && email.contains(".")) {
-            this.email = email;
-        } else {
-            throw new IllegalArgumentException("Invalid email address.");
-        }
-    }
+	    public void updateCustomerInfo(String email, String phone, String address) {
+	        this.email = email;
+	        this.phone = phone;
+	        this.address = address;
+	    }
 
-    public void setPhone(String phone) {
-        if (phone.matches("\\d{10}")) {
-            this.phone = phone;
-        } else {
-            throw new IllegalArgumentException("Phone number must be 10 digits.");
-        }
-    }
+		public void addOrder(Order order1) {
+			
+			
+		}
 
-    public void addOrder(Order order) { orders.add(order); }
-}
+		public String getFirstName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
 
-class Product {
-    private int productID;
-    private String productName;
-    private String description;
-    private double price;
+	class Product {
+	    private int productID;
+	    private String productName;
+	    private String description;
+	    private double price;
 
-    public Product(int productID, String productName, String description, double price) {
-        this.productID = productID;
-        this.productName = productName;
-        this.description = description;
-        setPrice(price);
-    }
+	    public Product(int productID, String productName, String description, double price) {
+	        this.productID = productID;
+	        this.productName = productName;
+	        this.description = description;
+	        this.price = price;
+	    }
 
-    public int getProductID() { return productID; }
-    public String getProductName() { return productName; }
-    public String getDescription() { return description; }
-    public double getPrice() { return price; }
+	    public void getProductDetails() {
+	        System.out.println("Product ID: " + productID);
+	        System.out.println("Name: " + productName);
+	        System.out.println("Description: " + description);
+	        System.out.println("Price: $" + price);
+	    }
 
-    public void setPrice(double price) {
-        if (price >= 0) {
-            this.price = price;
-        } else {
-            throw new IllegalArgumentException("Price cannot be negative.");
-        }
-    }
-}
+	    public void updateProductInfo(String description, double price) {
+	        this.description = description;
+	        this.price = price;
+	    }
 
-class Order {
-    private int orderID;
-    private Customer customer;
-    private Date orderDate;
-    private List<OrderDetail> orderDetails;
-    private double totalAmount;
+	    public double getPrice() {
+	        return price;
+	    }
+	}
 
-    public Order(int orderID, Customer customer, Date orderDate) {
-        this.orderID = orderID;
-        this.customer = customer;
-        setOrderDate(orderDate);
-        this.orderDetails = new ArrayList<>();
-        this.totalAmount = 0;
-    }
+	class Order {
+	    private int orderID;
+	    private Customer customer;
+	    private Date orderDate;
+	    private double totalAmount;
 
-    public int getOrderID() { return orderID; }
-    public Customer getCustomer() { return customer; }
-    public Date getOrderDate() { return orderDate; }
-    public double getTotalAmount() { return totalAmount; }
-    public List<OrderDetail> getOrderDetails() { return orderDetails; }
+	    public Order(int orderID, Customer customer, Date orderDate, double totalAmount) {
+	        this.orderID = orderID;
+	        this.customer = customer;
+	        this.orderDate = orderDate;
+	        this.totalAmount = totalAmount;
+	    }
 
-    public void setOrderDate(Date orderDate) {
-        if (orderDate != null && orderDate.before(new Date())) {
-            this.orderDate = orderDate;
-        } else {
-            throw new IllegalArgumentException("Order date must be in the past.");
-        }
-    }
+	    public void getOrderDetails() {
+	        System.out.println("Order ID: " + orderID);
+	        System.out.println("Customer: " + customer);
+	        System.out.println("Order Date: " + orderDate);
+	        System.out.println("Total Amount: $" + totalAmount);
+	    }
+	}
 
-    public void addOrderDetail(OrderDetail orderDetail) {
-        orderDetails.add(orderDetail);
-        totalAmount += orderDetail.calculateSubtotal();
-    }
-}
+	class OrderDetail {
+	    private int orderDetailID;
+	    private Order order;
+	    private Product product;
+	    private int quantity;
 
-class OrderDetail {
-    private int orderDetailID;
-    private Product product;
-    private int quantity;
+	    public OrderDetail(int orderDetailID, Order order, Product product, int quantity) {
+	        this.orderDetailID = orderDetailID;
+	        this.order = order;
+	        this.product = product;
+	        this.quantity = quantity;
+	    }
 
-    public OrderDetail(int orderDetailID, Product product, int quantity) {
-        this.orderDetailID = orderDetailID;
-        this.product = product;
-        setQuantity(quantity);
-    }
+	    public double calculateSubtotal() {
+	        return product.getPrice() * quantity;
+	    }
 
-    public int getOrderDetailID() { return orderDetailID; }
-    public Product getProduct() { return product; }
-    public int getQuantity() { return quantity; }
+		public Order getOrder() {
+			return order;
+		}
 
-    public void setQuantity(int quantity) {
-        if (quantity > 0) {
-            this.quantity = quantity;
-        } else {
-            throw new IllegalArgumentException("Quantity must be greater than zero.");
-        }
-    }
+		public void setOrder(Order order) {
+			this.order = order;
+		}
 
-    public double calculateSubtotal() {
-        return product.getPrice() * quantity;
-    }
-}
+		public int getOrderDetailID() {
+			return orderDetailID;
+		}
 
-class Inventory {
-    private int inventoryID;
-    private Product product;
-    private int quantityInStock;
+		public void setOrderDetailID(int orderDetailID) {
+			this.orderDetailID = orderDetailID;
+		}
+	}
 
-    public Inventory(int inventoryID, Product product, int quantityInStock) {
-        this.inventoryID = inventoryID;
-        this.product = product;
-        setQuantityInStock(quantityInStock);
-    }
+	class Inventory {
+	    private int inventoryID;
+	    private Product product;
+	    private int quantityInStock;
 
-    public int getInventoryID() { return inventoryID; }
-    public Product getProduct() { return product; }
-    public int getQuantityInStock() { return quantityInStock; }
+	    public Inventory(int inventoryID, Product product, int quantityInStock) {
+	        this.inventoryID = inventoryID;
+	        this.product = product;
+	        this.quantityInStock = quantityInStock;
+	    }
 
-    public void setQuantityInStock(int quantityInStock) {
-        if (quantityInStock >= 0) {
-            this.quantityInStock = quantityInStock;
-        } else {
-            throw new IllegalArgumentException("Stock cannot be negative.");
-        }
-    }
-}
+	    public void addToInventory(int quantity) {
+	        quantityInStock += quantity;
+	    }
 
-public class Main {
-    public static void main(String[] args) {
-        try {
-            Customer c1 = new Customer(1, "John", "Doe", "john.doe@example.com", "1234567890", "123 Main St");
-            Product p1 = new Product(101, "Laptop", "Gaming Laptop", 1200.99);
-            Inventory inv1 = new Inventory(201, p1, 50);
-            Order order1 = new Order(301, c1, new Date());
-            OrderDetail od1 = new OrderDetail(401, p1, 2);
-            order1.addOrderDetail(od1);
-            c1.addOrder(order1);
+	    public void removeFromInventory(int quantity) {
+	        if (quantityInStock >= quantity) {
+	            quantityInStock -= quantity;
+	        } else {
+	            System.out.println("Insufficient stock!");
+	        }
+	    }
 
-            System.out.println("Order placed successfully!");
-            System.out.println("Customer: " + c1.getFirstName() + " " + c1.getLastName());
-            System.out.println("Product Ordered: " + p1.getProductName() + " - $" + p1.getPrice());
-            System.out.println("Total Amount: $" + order1.getTotalAmount());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }
-}
+		public int getInventoryID() {
+			return inventoryID;
+		}
+
+		public void setInventoryID(int inventoryID) {
+			this.inventoryID = inventoryID;
+		}
+
+		public Product getProduct() {
+			return product;
+		}
+
+		public void setProduct(Product product) {
+			this.product = product;
+		}
+	}
+
+	public class TechShopMain {  
+	    public static void main(String[] args) {
+	        Customer c1 = new Customer(1, "John", "Doe", "john.doe@example.com", "1234567890", "123 Main St");
+	        Product p1 = new Product(101, "Laptop", "Gaming Laptop", 1200.99);
+	        @SuppressWarnings("unused")
+			Inventory inv1 = new Inventory(201, p1, 50);
+
+	        c1.getCustomerDetails();
+	        p1.getProductDetails();
+	    }
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
