@@ -1,0 +1,142 @@
+import java.sql.*;
+
+class DatabaseConnector {
+    private static final String URL = "jdbc:mysql://localhost:3306/ecommerce";
+    private static final String USER = "root";
+    private static final String PASSWORD = "Asensha@18";
+    private static Connection connection;
+
+    public static Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+        }
+        return connection;
+    }
+
+    public static void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class Customer {
+    private int customerID;
+    private String firstName, lastName, email, phone, address;
+
+    public Customer(int customerID, String firstName, String lastName, String email, String phone, String address) {
+        this.customerID = customerID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }
+
+    public void registerCustomer() {
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            String query = "INSERT INTO Customers VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, customerID);
+            stmt.setString(2, firstName);
+            stmt.setString(3, lastName);
+            stmt.setString(4, email);
+            stmt.setString(5, phone);
+            stmt.setString(6, address);
+            stmt.executeUpdate();
+            System.out.println("Customer registered!");
+        } catch (SQLException e) {
+            System.out.println("Error registering customer: " + e.getMessage());
+        }
+    }
+}
+
+class Product {
+    private int productID;
+    private String name, description;
+    private double price;
+
+    public Product(int productID, String name, String description, double price) {
+        this.productID = productID;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+    }
+
+    public void addProduct() {
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            String query = "INSERT INTO Products VALUES (?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, productID);
+            stmt.setString(2, name);
+            stmt.setString(3, description);
+            stmt.setDouble(4, price);
+            stmt.executeUpdate();
+            System.out.println("Product added!");
+        } catch (SQLException e) {
+            System.out.println("Error adding product: " + e.getMessage());
+        }
+    }
+
+    public static void searchProductByName(String nameQuery) {
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            String query = "SELECT * FROM Products WHERE name LIKE ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, "%" + nameQuery + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("Found: " + rs.getString("name") + " - ₹" + rs.getDouble("price"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Search error: " + e.getMessage());
+        }
+    }
+}
+
+class Inventory {
+    private int productID, quantity;
+
+    public Inventory(int productID, int quantity) {
+        this.productID = productID;
+        this.quantity = quantity;
+    }
+
+    public void updateInventory() {
+        try (Connection conn = DatabaseConnector.getConnection()) {
+            String query = "UPDATE Inventory SET quantity = ? WHERE product_id = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, productID);
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Inventory updated.");
+            } else {
+                System.out.println("Product not found in inventory.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Inventory update error: " + e.getMessage());
+        }
+    }
+}
+
+public class TechShopApp {
+    public static void main(String[] args) {
+        Customer c1 = new Customer(1, "John", "Doe", "john@example.com", "9999999999", "Chennai");
+        c1.registerCustomer();
+
+        Product p1 = new Product(101, "Mouse", "Wireless Mouse", 799.00);
+        p1.addProduct();
+
+        Inventory inv = new Inventory(101, 50);
+        inv.updateInventory();
+
+        Product.searchProductByName("Mouse");
+
+        DatabaseConnector.closeConnection();
+    }
+}
