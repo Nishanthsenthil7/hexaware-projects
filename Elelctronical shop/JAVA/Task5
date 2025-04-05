@@ -1,0 +1,149 @@
+import java.util.*;
+
+class InvalidDataException extends Exception {
+    public InvalidDataException(String message) {
+        super(message);
+    }
+}
+class InsufficientStockException extends Exception {
+    public InsufficientStockException(String message) {
+        super(message);
+    }
+}
+class IncompleteOrderException extends Exception {
+    public IncompleteOrderException(String message) {
+        super(message);
+    }
+}
+class Customer {
+    private int customerID;
+    private String firstName, lastName, email, phone, address;
+    private List<Order> orders = new ArrayList<>();
+
+    public Customer(int customerID, String firstName, String lastName, String email, String phone, String address) throws InvalidDataException {
+        if (!email.contains("@")) throw new InvalidDataException("Invalid email format.");
+        this.customerID = customerID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+    }public void addOrder(Order order) {
+        orders.add(order);
+    }
+    public String getCustomerDetails() {
+        return customerID + " - " + firstName + " " + lastName + " - " + email;
+    }
+}
+class Product {
+    private int productID;
+    private String productName, description;
+    private double price;
+
+    public Product(int productID, String productName, String description, double price) throws InvalidDataException {
+        if (price < 0) throw new InvalidDataException("Price cannot be negative.");
+        this.productID = productID;
+        this.productName = productName;
+        this.description = description;
+        this.price = price;
+    }
+
+    public double getPrice() { return price; }
+    public String getProductName() { return productName; }
+}
+class Inventory {
+    private int inventoryID;
+    private Product product;
+    private int quantityInStock;
+    public Inventory(int inventoryID, Product product, int quantityInStock) throws InvalidDataException {
+        if (quantityInStock < 0) throw new InvalidDataException("Stock cannot be negative.");
+        this.inventoryID = inventoryID;
+        this.product = product;
+        this.quantityInStock = quantityInStock;
+    }
+    public boolean isProductAvailable(int qty) {
+        return quantityInStock >= qty;
+    }
+    public void reduceStock(int qty) throws InsufficientStockException {
+        if (qty > quantityInStock) throw new InsufficientStockException("Not enough stock available.");
+        quantityInStock -= qty;
+    }
+    public Product getProduct() {
+        return product;
+    }
+}
+class OrderDetail {
+    private int detailID;
+    private Product product;
+    private int quantity;
+    public OrderDetail(int detailID, Product product, int quantity) throws InvalidDataException {
+        if (quantity <= 0) throw new InvalidDataException("Quantity must be greater than 0.");
+        this.detailID = detailID;
+        this.product = product;
+        this.quantity = quantity;
+    }
+    public double getSubtotal() {
+        return product.getPrice() * quantity;
+    }
+    public String getDetailInfo() {
+        return product.getProductName() + " x" + quantity + " = ₹" + getSubtotal();
+    }
+}
+class Order {
+    private int orderID;
+    private Customer customer;
+    private Date orderDate;
+    private List<OrderDetail> orderDetails = new ArrayList<>();
+
+    public Order(int orderID, Customer customer) {
+        this.orderID = orderID;
+        this.customer = customer;
+        this.orderDate = new Date();
+        customer.addOrder(this);
+    }
+    public void addDetail(OrderDetail detail) throws IncompleteOrderException {
+        if (detail == null) throw new IncompleteOrderException("Order detail cannot be null.");
+        orderDetails.add(detail);
+    }
+    public double calculateTotal() {
+        double total = 0;
+        for (OrderDetail d : orderDetails) {
+            total += d.getSubtotal();
+        }
+        return total;
+    }
+    public String getOrderSummary() {
+        StringBuilder sb = new StringBuilder("Order #" + orderID + " on " + orderDate + "\n");
+        for (OrderDetail d : orderDetails) {
+            sb.append(d.getDetailInfo()).append("\n");
+        }
+        sb.append("Total: ₹").append(calculateTotal());
+        return sb.toString();
+    }
+}
+public class TechShopTask5 {
+    public static void main(String[] args) {
+        try {
+            Customer c1 = new Customer(1, "Nishanth", "Kumar", "nishanth@email.com", "9876543210", "Pollachi");
+            Product p1 = new Product(101, "Laptop", "Powerful laptop", 75000);
+            Product p2 = new Product(102, "Mouse", "Wireless mouse", 800);
+            Inventory inv1 = new Inventory(1, p1, 5);
+            Inventory inv2 = new Inventory(2, p2, 10);
+            Order order1 = new Order(5001, c1);
+           
+if (!inv1.isProductAvailable(1)) throw new InsufficientStockException("Laptop out of stock.");
+            inv1.reduceStock(1);
+            OrderDetail d1 = new OrderDetail(1, p1, 1);
+            order1.addDetail(d1);
+            
+if (!inv2.isProductAvailable(2)) throw new InsufficientStockException("Mouse stock insufficient.");
+            inv2.reduceStock(2);
+            OrderDetail d2 = new OrderDetail(2, p2, 2);
+            order1.addDetail(d2);
+            System.out.println(c1.getCustomerDetails());
+            System.out.println(order1.getOrderSummary());
+        } catch (InvalidDataException | InsufficientStockException | IncompleteOrderException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
