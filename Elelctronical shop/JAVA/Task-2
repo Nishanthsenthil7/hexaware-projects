@@ -1,6 +1,7 @@
-package ecomwebsite;
-
-import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+    }
+}
 
 class Customer {
     private int customerID;
@@ -9,31 +10,62 @@ class Customer {
     private String email;
     private String phone;
     private String address;
-    private List<Order> orders;
 
     public Customer(int customerID, String firstName, String lastName, String email, String phone, String address) {
-        this.customerID = customerID;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.orders = new ArrayList<>();
+        setCustomerID(customerID);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setEmail(email);
+        setPhone(phone);
+        setAddress(address);
     }
 
-    public int getCustomerID() { return customerID; }
-    public String getFirstName() { return firstName; }
-    public String getLastName() { return lastName; }
-    public String getEmail() { return email; }
-    public String getPhone() { return phone; }
-    public String getAddress() { return address; }
-
-    public void addOrder(Order order) {
-        orders.add(order);
+    public int getCustomerID() {
+        return customerID;
     }
 
-    public int calculateTotalOrders() {
-        return orders.size();
+    public void setCustomerID(int customerID) {
+        if (customerID > 0) this.customerID = customerID;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        if (!firstName.isEmpty()) this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        if (!lastName.isEmpty()) this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        if (email.contains("@")) this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        if (phone.matches("\\d{10}")) this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        if (!address.isEmpty()) this.address = address;
     }
 }
 
@@ -44,98 +76,41 @@ class Product {
     private double price;
 
     public Product(int productID, String productName, String description, double price) {
-        this.productID = productID;
-        this.productName = productName;
-        this.description = description;
+        setProductID(productID);
+        setProductName(productName);
+        setDescription(description);
         setPrice(price);
     }
 
-    public int getProductID() { return productID; }
-    public String getProductName() { return productName; }
-    public String getDescription() { return description; }
-    public double getPrice() { return price; }
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        if (productID > 0) this.productID = productID;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        if (!productName.isEmpty()) this.productName = productName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        if (!description.isEmpty()) this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
 
     public void setPrice(double price) {
-        if (price < 0) {
-            throw new IllegalArgumentException("Price cannot be negative.");
-        }
-        this.price = price;
+        if (price >= 0) this.price = price;
     }
 }
-
-class Order {
-    private int orderID;
-    private Customer customer;
-    private Date orderDate;
-    private List<OrderDetail> orderDetails;
-    private double totalAmount;
-
-    public Order(int orderID, Customer customer, Date orderDate) {
-        this.orderID = orderID;
-        this.customer = customer;
-        this.orderDate = orderDate;
-        this.orderDetails = new ArrayList<>();
-        this.totalAmount = 0;
-    }
-
-    public int getOrderID() { return orderID; }
-    public Customer getCustomer() { return customer; }
-    public Date getOrderDate() { return orderDate; }
-    public double getTotalAmount() { return totalAmount; }
-
-    public void addOrderDetail(OrderDetail orderDetail) {
-        orderDetails.add(orderDetail);
-        totalAmount += orderDetail.calculateSubtotal();
-    }
-}
-
-class OrderDetail {
-    private int orderDetailID;
-    private Product product;
-    private int quantity;
-
-    public OrderDetail(int orderDetailID, Product product, int quantity) {
-        this.orderDetailID = orderDetailID;
-        this.product = product;
-        setQuantity(quantity);
-    }
-
-    public int getOrderDetailID() { return orderDetailID; }
-    public Product getProduct() { return product; }
-    public int getQuantity() { return quantity; }
-
-    public void setQuantity(int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than zero.");
-        }
-        this.quantity = quantity;
-    }
-
-    public double calculateSubtotal() {
-        return product.getPrice() * quantity;
-    }
-}
-
-class Inventory {
-    private int inventoryID;
-    private Product product;
-    private int quantityInStock;
-
-    public Inventory(int inventoryID, Product product, int quantityInStock) {
-        this.inventoryID = inventoryID;
-        this.product = product;
-        setQuantityInStock(quantityInStock);
-    }
-
-    public int getInventoryID() { return inventoryID; }
-    public Product getProduct() { return product; }
-    public int getQuantityInStock() { return quantityInStock; }
-
-    public void setQuantityInStock(int quantityInStock) {
-        if (quantityInStock < 0) {
-            throw new IllegalArgumentException("Stock cannot be negative.");
-        }
-        this.quantityInStock = quantityInStock;
-    }
-}
-
