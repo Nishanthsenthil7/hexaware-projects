@@ -1,0 +1,135 @@
+create database project;
+use project;
+
+create table victims ( victimid int primary key, 
+firstname varchar(55), 
+lastname varchar(55), 
+vdob date,  
+gender varchar(10), 
+address varchar(255), 
+vphno varchar(11));
+
+create table suspects (
+    suspectid int primary key,
+    firstname varchar(55),
+    lastname varchar(55),
+    sdob date,
+    gender varchar(10),
+    scontactinfo varchar(255)
+);
+
+create table lawenforcementagencies (
+    agencyid int primary key,
+    agencyname varchar(255),
+    jurisdiction varchar(255),
+    contactinfo varchar(255)
+);
+
+create table officers (
+    officerid int primary key,
+    firstname varchar(255),
+    lastname varchar(255),
+    badgeno varchar(20),
+    officerrank varchar(50),
+    contactinfo varchar(255),
+    agencyid int,
+    foreign key (agencyid) references lawenforcementagencies(agencyid) on delete cascade
+);
+
+create table incidents (
+    incidentid int primary key,
+    incidenttype varchar(255),
+    incidentdate date,
+    location varchar(255),
+    incidentdesc varchar(1000),
+    status varchar(50),
+    victimid int,
+    suspectid int,
+    foreign key (victimid) references victims(victimid),
+    foreign key (suspectid) references suspects(suspectid) on delete cascade
+);
+
+create table reports (
+    reportid int primary key,
+    incidentid int,
+    reportingofficer int,
+    reportdate date,
+    reportdetails varchar(1000),
+    reportstatus varchar(50),
+    foreign key (incidentid) references incidents(incidentid),
+    foreign key (reportingofficer) references officers(officerid) on delete cascade
+);
+
+create table evidence(evidenceid int primary key,
+descr varchar(220),
+locationfound varchar(100),
+incidentid int,
+foreign key (incidentid) references incidents(incidentid) 
+);
+
+create table cases(caseid int primary key,
+incidentid int,
+casedescription varchar(225),
+foreign key (incidentid) references incidents(incidentid)
+);
+
+insert into victims (victimid, firstname, lastname, vdob, gender, address, vphno) 
+values (1, 'riyas', 'doe', '1990-01-15', 'male', '123 main st, pollachi', '5551234'),
+       (2, 'deepak', 'naba', '1999-01-15', 'male', '456 park st, coimbatore', '5556789'),
+       (3, 'esaki', 'lee', '1985-03-22', 'female', '789 oak st, udumalai', '5552345'),
+       (4, 'kiran', 'mehta', '1970-06-10', 'male', '101 pine st, anamalai', '5559876'),
+       (5, 'selva', 'gomez', '2002-12-25', 'female', '654 elm st, alaiyar', '5554321');
+
+
+insert into suspects (suspectid, firstname, lastname, sdob, gender, scontactinfo) 
+values (1, 'riyas', 'smith', '1995-05-20', 'female', '456 oak st, pollachi'),
+       (2, 'deepak', 'smith', '2000-05-20', 'female', 'united coimbatore'),
+       (3, 'esaki', 'jones', '1980-07-15', 'male', '123 cedar st, udumalai'),
+       (4, 'kiran', 'brown', '1992-11-12', 'male', '456 maple st, anamalai'),
+       (5, 'selva', 'davis', '1985-03-05', 'female', '789 birch st, aliyar');
+
+
+insert into lawenforcementagencies (agencyid, agencyname, jurisdiction, contactinfo) 
+values (1, 'city police department', 'citywide', '123 pine st, retropolis'),
+       (2, 'state troopers', 'statewide', '789 broad st, capitalville'),
+       (3, 'federal bureau of investigation', 'nationwide', '101 federal st, capitalville'),
+       (4, 'county sheriff’s office', 'countywide', '456 hill st, countyseat'),
+       (5, 'metropolitan police', 'metro area', '321 park ave, metropolis');
+
+
+insert into officers (officerid, firstname, lastname, badgeno, officerrank, contactinfo, agencyid) 
+values (1, 'vijay', 'williams', '12345', 'sergeant', '555-1111', 1),
+       (2, 'ajith', 'johnson', '23456', 'lieutenant', '555-2222', 2),
+       (3, 'kamal', 'evans', '34567', 'captain', '555-3333', 3),
+       (4, 'rajini', 'lewis', '45678', 'detective', '555-4444', 4),
+       (5, 'sam', 'garcia', '56789', 'officer', '555-5555', 5);
+
+
+insert into incidents (incidentid, incidenttype, incidentdate, location, incidentdesc, status, victimid, suspectid) 
+values (1, 'murder', '2023-01-18', 'chennai', 'mysterious man killed a person', 'under investigation', 1, 1),
+       (2, 'theft', '2023-02-10', 'cityville', 'jewelry stolen from house', 'closed', 2, 2),
+       (3, 'assault', '2023-03-15', 'townville', 'physical assault at park', 'under investigation', 3, 3),
+       (4, 'fraud', '2023-04-20', 'metropolis', 'financial scam by online syndicate', 'pending', 4, 4),
+       (5, 'burglary', '2023-05-25', 'villageburg', 'house burglary during the night', 'solved', 5, 5);
+
+
+insert into evidence (evidenceid, descr, locationfound, incidentid) 
+values (1, 'knife with blood', 'chennai', 1),
+       (2, 'stolen necklace', 'cityville', 2),
+       (3, 'dna sample from park', 'townville', 3),
+       (4, 'emails detailing fraud', 'metropolis', 4),
+       (5, 'broken window glass', 'villageburg', 5);
+
+
+insert into cases (caseid, incidentid, casedescription) 
+values (1, 1, 'murder case with prime suspect in custody'),
+       (2, 2, 'theft case closed after recovery of stolen items'),
+       (3, 3, 'ongoing investigation into physical assault'),
+       (4, 4, 'fraud case pending trial'),
+       (5, 5, 'burglary case solved with suspect arrested');
+
+select * from lawenforcementagencies;
+select * from incidents;
+select * from cases;
+select * from reports;
+select * from suspects;
