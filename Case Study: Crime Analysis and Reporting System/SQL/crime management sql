@@ -82,11 +82,11 @@ values (1, 'riyas', 'doe', '1990-01-15', 'male', '123 main st, pollachi', '55512
 
 
 insert into suspects (suspectid, firstname, lastname, sdob, gender, scontactinfo) 
-values (1, 'riyas', 'smith', '1995-05-20', 'female', '456 oak st, pollachi'),
-       (2, 'deepak', 'smith', '2000-05-20', 'female', 'united coimbatore'),
-       (3, 'esaki', 'jones', '1980-07-15', 'male', '123 cedar st, udumalai'),
-       (4, 'kiran', 'brown', '1992-11-12', 'male', '456 maple st, anamalai'),
-       (5, 'selva', 'davis', '1985-03-05', 'female', '789 birch st, aliyar');
+values (1, 'ram', 'smith', '1995-05-20', 'female', '456 oak st, pollachi'),
+       (2, 'kavin', 'smith', '2000-05-20', 'female', 'united coimbatore'),
+       (3, 'kanagu', 'jones', '1980-07-15', 'male', '123 cedar st, udumalai'),
+       (4, 'kalai', 'brown', '1992-11-12', 'male', '456 maple st, anamalai'),
+       (5, 'siva', 'davis', '1985-03-05', 'female', '789 birch st, aliyar');
 
 
 insert into lawenforcementagencies (agencyid, agencyname, jurisdiction, contactinfo) 
