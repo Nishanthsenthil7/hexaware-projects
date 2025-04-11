@@ -44,15 +44,15 @@ foreign key (productid) references products(productid) on delete cascade
 
 insert into customers (firstname, lastname, email, phone, address) values
 ('sanjay', 'kumar', 'sanjay.kumar@gmail.com', 1234567890, 'ramanadhapuram, coimbatore'),
-('aravind', 'saran', 'aravind.saran@gmail.com', 9876543210, 'olymbus, coimbatore'),
-('mathavan', 'firodiya', 'mathavan.f@gmail.com', 1112223333, 'rasecourse, coimbatore'),
-('murali', 'chiplunkar', 'murali.c@gmail.com', 4445556666, 'pune, maharashtra'),
-('ragini', 'kanth', 'rajinikanth.c@gmail.com', 7778889999, 'chennai, tamil nadu'),
-('keerthika', 'ravi', 'keerthikaravi.@gmail.com', 6665554444, 'chennai, tamil nadu'),
-('jhanaki', 'krishna', 'janu.k@gmail.com', 3332221111, 'chennai, tamil nadu'),
-('juli', 'sumetha', 'juli.sumetha@gmail.com', 8887776666, 'chennai, tamil nadu'),
-('rajan', 'narayanan', 'rajan.n@gmail.com', 9998887777, 'chennai, tamil nadu'),
-('sushmita', 'shilpa', 'sushmitashilpa.s@gmail.com', 2223334444, 'chennai, tamil nadu');
+('aravind', 'saran', 'aravind.saran@gmail.com', 9999999999, 'olymbus, coimbatore'),
+('mathavan', 'firodiya', 'mathavan.f@gmail.com', 1111111111, 'rasecourse, coimbatore'),
+('murali', 'chiplunkar', 'murali.c@gmail.com', 4444444444, 'pune, maharashtra'),
+('ragini', 'kanth', 'rajinikanth.c@gmail.com', 777777777, 'chennai, tamil nadu'),
+('keerthika', 'ravi', 'keerthikaravi.@gmail.com', 6444444444, 'chennai, tamil nadu'),
+('jhanaki', 'krishna', 'janu.k@gmail.com', 33333333331, 'kovai, tamil nadu'),
+('juli', 'sumetha', 'juli.sumetha@gmail.com', 1111111111, 'pollachi, tamil nadu'),
+('rajan', 'narayanan', 'rajan.n@gmail.com', 7777777777, 'kovilpalaiyam, tamil nadu'),
+('sushmita', 'shilpa', 'sushmitashilpa.s@gmail.com', 2222222222, 'singanallur, tamil nadu');
 
 INSERT INTO products (productname, description, price) VALUES
 ('Gaming Console', 'Next-gen gaming console with 4K support', 499.99),
@@ -66,48 +66,52 @@ INSERT INTO products (productname, description, price) VALUES
 ('Smart Thermostat', 'Wi-Fi enabled programmable thermostat', 199.99),
 ('Portable Charger', '10000mAh power bank with fast charging', 49.99);
 
-insert into orders (customerid, totalamount) values
-(1, 1249.98),
-(2, 699.99),
-(3, 249.98),
-(4, 199.99),
-(5, 109.99),
-(6, 89.99),
-(7, 79.99),
-(8, 149.99),
-(9, 399.99),
-(10, 999.99);
+INSERT INTO orders (customerid, totalamount) VALUES
+(11, 1149.98),
+(12, 1299.99),
+(13, 749.97),
+(14, 89.99),
+(15, 1999.98),
+(16, 589.99),
+(17, 999.99),
+(18, 399.98),
+(19, 649.99),
+(20, 299.99);
 
-insert into orderdetails (orderid, productid, quantity) values
-(1, 1, 1),
-(1, 3, 2),
-(2, 2, 1),
-(3, 7, 1),
-(3, 6, 1),
-(4, 3, 1),
-(5, 10, 1),
-(6, 5, 1),
-(7, 9, 1),
-(8, 4, 1);
 
-insert into inventory (productid, quantityinstock) values
-(1, 50),
-(2, 30),
-(3, 40),
-(4, 25),
-(5, 35),
-(6, 60),
-(7, 20),
-(8, 15),
-(9, 45),
-(10, 30);
+INSERT INTO orderdetails (orderid, productid, quantity) VALUES
+(1, 2, 1),
+(1, 4, 2),
+(2, 1, 1),
+(3, 6, 3),
+(4, 5, 1),
+(5, 3, 2),
+(6, 10, 1),
+(7, 7, 1),
+(8, 8, 2),
+(9, 9, 1),
+(10, 6, 2);
+
+
+INSERT INTO inventory (productid, quantityinstock) VALUES
+(1, 40),
+(2, 55),
+(3, 38),
+(4, 20),
+(5, 60),
+(6, 25),
+(7, 30),
+(8, 10),
+(9, 50),
+(10, 22);
+
 
 
 select firstname, lastname, email from customers;
 
 select orders.orderid, orders.orderdate, customers.firstname, customers.lastname from orders join customers on orders.customerid = customers.customerid;
 
-insert into customers (firstname, lastname, email, phone, address) values ('john', 'doe', 'john.doe@example.com', '1234567890', '123 elm st');
+insert into customers (firstname, lastname, email, phone, address) values ('joy', 'don', 'joy.doe@example.com', '1111111111', '123');
 set sql_safe_updates = 0;
 update products set price = round(price * 1.10, 2) where productname in ('laptop', 'smartphone', 'smartwatch', 'tablet', 'headphones', 'monitor');
 
@@ -116,7 +120,7 @@ delete from orders where orderid =7;
 
 insert into orders (customerid, totalamount) values (5, 500.00);
 
-update customers set email = 'sarvesh.shelke@gmail.com', address = 'mumbai, maharashtra' where customerid = 5;
+update customers set email = 'sarvesh.sheik@gmail.com', address = 'muunar, tamilnadu' where customerid = 5;
 
 update orders
 set totalamount = coalesce((
@@ -175,17 +179,6 @@ from orders join customers on orders.customerid = customers.customerid group by 
 select orders.orderid, customers.firstname, customers.lastname, orders.totalamount from orders
 join customers on orders.customerid = customers.customerid order by orders.totalamount desc limit 1;
 
-select products.productname, count(orderdetails.orderid) as timesordered from orderdetails
-join products on orderdetails.productid = products.productid group by products.productname;
-
-select distinct customers.firstname, customers.lastname, customers.email
-from customers join orders on customers.customerid = orders.customerid join orderdetails on orders.orderid = orderdetails.orderid
-join products on orderdetails.productid = products.productid where products.productname = 'laptop';  -- change 'laptop' to user input
-
-select sum(totalamount) as totalrevenue 
-from orders where orderdate between (select min(orderdate) from orders) and (select max(orderdate) from orders);
-
-
 select firstname, lastname from customers where customerid not in (select distinct customerid from orders);
 
 select count(*) as totalproducts from products;
@@ -209,6 +202,18 @@ select avg(totalamount) as averageordervalue from orders;
 
 select customers.firstname, customers.lastname, count(orders.orderid) as ordercount from customers
 left join orders on customers.customerid = orders.customerid group by customers.customerid;
+
+
+select products.productname, count(orderdetails.orderid) as timesordered from orderdetails
+join products on orderdetails.productid = products.productid group by products.productname;
+
+select distinct customers.firstname, customers.lastname, customers.email
+from customers join orders on customers.customerid = orders.customerid join orderdetails on orders.orderid = orderdetails.orderid
+join products on orderdetails.productid = products.productid where products.productname = 'keyboard';  
+
+select sum(totalamount) as totalrevenue 
+from orders where orderdate between (select min(orderdate) from orders) and (select max(orderdate) from orders);
+
 
 
 
