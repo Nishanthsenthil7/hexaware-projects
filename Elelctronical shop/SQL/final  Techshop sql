@@ -1,0 +1,214 @@
+create database techshop;
+use techshop;
+
+create table customers(
+customerid int auto_increment primary key,
+firstname varchar(15) not null,
+lastname varchar(15) not null,
+email varchar(50) unique not null,
+phone varchar(15),
+address text
+);
+
+create table products(
+productid int auto_increment primary key,
+productname varchar(100) not null,
+descriptions text,
+price decimal(10,2) not null
+);
+
+create table orders(
+orderid int auto_increment primary key,
+customerid int,
+orderdate datetime default current_timestamp,
+totalamount decimal(10,2) not null,
+foreign key (customerid) references customers(customerid) on delete cascade
+);
+
+create table orderdetails(
+orderdetailid int auto_increment primary key,
+orderid int,
+productid int,
+quantity int not null,
+foreign key (orderid) references orders(orderid) on delete cascade,
+foreign key (productid) references products(productid) on delete cascade
+);
+
+create table inventory(
+inventoryid int auto_increment primary key,
+productid int,
+quantityinstock int not null,
+laststockupdate timestamp default current_timestamp on update current_timestamp,
+foreign key (productid) references products(productid) on delete cascade
+);
+
+insert into customers (firstname, lastname, email, phone, address) values
+('sanjay', 'kumar', 'sanjay.kumar@gmail.com', 1234567890, 'ramanadhapuram, coimbatore'),
+('aravind', 'saran', 'aravind.saran@gmail.com', 9876543210, 'olymbus, coimbatore'),
+('mathavan', 'firodiya', 'mathavan.f@gmail.com', 1112223333, 'rasecourse, coimbatore'),
+('murali', 'chiplunkar', 'murali.c@gmail.com', 4445556666, 'pune, maharashtra'),
+('ragini', 'kanth', 'rajinikanth.c@gmail.com', 7778889999, 'chennai, tamil nadu'),
+('keerthika', 'ravi', 'keerthikaravi.@gmail.com', 6665554444, 'chennai, tamil nadu'),
+('jhanaki', 'krishna', 'janu.k@gmail.com', 3332221111, 'chennai, tamil nadu'),
+('juli', 'sumetha', 'juli.sumetha@gmail.com', 8887776666, 'chennai, tamil nadu'),
+('rajan', 'narayanan', 'rajan.n@gmail.com', 9998887777, 'chennai, tamil nadu'),
+('sushmita', 'shilpa', 'sushmitashilpa.s@gmail.com', 2223334444, 'chennai, tamil nadu');
+
+INSERT INTO products (productname, description, price) VALUES
+('Gaming Console', 'Next-gen gaming console with 4K support', 499.99),
+('Wireless Earbuds', 'Compact earbuds with noise isolation', 129.99),
+('4K TV', '55-inch Ultra HD Smart TV', 799.99),
+('Graphics Card', 'High-end GPU for gaming and rendering', 699.99),
+('Router', 'Dual-band Wi-Fi 6 router', 149.99),
+('Webcam', '1080p HD webcam with built-in mic', 89.99),
+('Drone', 'Camera drone with 4K video support', 999.99),
+('VR Headset', 'Virtual reality headset with motion sensors', 399.99),
+('Smart Thermostat', 'Wi-Fi enabled programmable thermostat', 199.99),
+('Portable Charger', '10000mAh power bank with fast charging', 49.99);
+
+insert into orders (customerid, totalamount) values
+(1, 1249.98),
+(2, 699.99),
+(3, 249.98),
+(4, 199.99),
+(5, 109.99),
+(6, 89.99),
+(7, 79.99),
+(8, 149.99),
+(9, 399.99),
+(10, 999.99);
+
+insert into orderdetails (orderid, productid, quantity) values
+(1, 1, 1),
+(1, 3, 2),
+(2, 2, 1),
+(3, 7, 1),
+(3, 6, 1),
+(4, 3, 1),
+(5, 10, 1),
+(6, 5, 1),
+(7, 9, 1),
+(8, 4, 1);
+
+insert into inventory (productid, quantityinstock) values
+(1, 50),
+(2, 30),
+(3, 40),
+(4, 25),
+(5, 35),
+(6, 60),
+(7, 20),
+(8, 15),
+(9, 45),
+(10, 30);
+
+
+select firstname, lastname, email from customers;
+
+select orders.orderid, orders.orderdate, customers.firstname, customers.lastname from orders join customers on orders.customerid = customers.customerid;
+
+insert into customers (firstname, lastname, email, phone, address) values ('john', 'doe', 'john.doe@example.com', '1234567890', '123 elm st');
+set sql_safe_updates = 0;
+update products set price = round(price * 1.10, 2) where productname in ('laptop', 'smartphone', 'smartwatch', 'tablet', 'headphones', 'monitor');
+
+delete from orderdetails where orderid = 5;
+delete from orders where orderid =7;
+
+insert into orders (customerid, totalamount) values (5, 500.00);
+
+update customers set email = 'sarvesh.shelke@gmail.com', address = 'mumbai, maharashtra' where customerid = 5;
+
+update orders
+set totalamount = coalesce((
+    select sum(products.price * orderdetails.quantity)
+    from orderdetails
+    join products on orderdetails.productid = products.productid
+    where orderdetails.orderid = orders.orderid
+), 0);
+
+delete from orderdetails where orderid in (select orderid from orders where customerid = 5);
+
+delete from orders where customerid = 5;
+
+insert into products (productname, descriptions, price) values ('gaming laptop', 'high-performance gaming laptop with rgb keyboard', 1500.00);
+
+alter table orders add column status varchar(20) default 'pending';
+
+update orders set status = 'shipped' where orderid = 1;
+select orderid, status from orders;
+
+alter table customers add column ordercount int default 0;
+
+update customers
+set ordercount = (
+    select count(*) from orders where orders.customerid = customers.customerid
+);
+
+select customerid, firstname, lastname, ordercount from customers;
+
+select orderid, orderdate, (select firstname from customers where customers.customerid = orders.customerid) as firstname, 
+(select lastname from customers where customers.customerid = orders.customerid) as lastname from orders;
+
+select products.productname, sum(products.price * orderdetails.quantity) as totalrevenue from orderdetails
+join products on orderdetails.productid = products.productid group by products.productname;
+
+select distinct customers.firstname, customers.lastname, customers.email, customers.phone from customers
+join orders on customers.customerid = orders.customerid;
+
+select products.productname, sum(orderdetails.quantity) as totalquantityordered from orderdetails
+join products on orderdetails.productid = products.productid group by products.productname
+order by totalquantityordered desc limit 1;
+
+update products 
+set category = 
+case when productname in ('laptop', 'smartphone', 'tablet', 'smartwatch', 'headphones', 'monitor', 'gaming laptop') then 'electronics'
+when productname in ('keyboard', 'mouse', 'external hard drive', 'speaker') then 'accessories'
+else 'other'
+end;
+set sql_safe_updates = 0;
+
+select productname, category from products;
+
+select customers.firstname, customers.lastname, avg(orders.totalamount) as avgordervalue
+from orders join customers on orders.customerid = customers.customerid group by customers.customerid;
+
+select orders.orderid, customers.firstname, customers.lastname, orders.totalamount from orders
+join customers on orders.customerid = customers.customerid order by orders.totalamount desc limit 1;
+
+select products.productname, count(orderdetails.orderid) as timesordered from orderdetails
+join products on orderdetails.productid = products.productid group by products.productname;
+
+select distinct customers.firstname, customers.lastname, customers.email
+from customers join orders on customers.customerid = orders.customerid join orderdetails on orders.orderid = orderdetails.orderid
+join products on orderdetails.productid = products.productid where products.productname = 'laptop';  -- change 'laptop' to user input
+
+select sum(totalamount) as totalrevenue 
+from orders where orderdate between (select min(orderdate) from orders) and (select max(orderdate) from orders);
+
+
+select firstname, lastname from customers where customerid not in (select distinct customerid from orders);
+
+select count(*) as totalproducts from products;
+
+select sum(totalamount) as totalrevenue from orders;
+
+select avg(quantity) as avgquantityordered from orderdetails where productid in (select productid from products where category = 'laptop');
+
+select sum(totalamount) as customerrevenue from orders where customerid = 1;  r id
+
+select customerid, count(orderid) as ordercount from orders group by customerid
+order by ordercount desc limit 1;
+
+select productid, sum(quantity) as totalordered from orderdetails group by productid
+order by totalordered desc limit 1;
+
+select customers.firstname, customers.lastname, sum(orders.totalamount) as totalspent from customers
+join orders on customers.customerid = orders.customerid group by customers.customerid order by totalspent desc limit 1;
+
+select avg(totalamount) as averageordervalue from orders;
+
+select customers.firstname, customers.lastname, count(orders.orderid) as ordercount from customers
+left join orders on customers.customerid = orders.customerid group by customers.customerid;
+
+
+
